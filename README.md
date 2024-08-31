@@ -51,8 +51,6 @@ Docker com disponibilidade do docker compose v2 ou docker compose v1.
 
 ### 🔧 Instalação
 
-Uma série de exemplos passo-a-passo que informam o que você deve executar para ter um ambiente de desenvolvimento em execução.
-
 Clone o projeto:
 
 ```
@@ -69,7 +67,7 @@ docker compose up --build ou docker compose up(se tiver na v2 do docker compose 
 
 ## 🛠️ Construído com
 
-Mencione as ferramentas que você usou para criar seu projeto
+Para este projeto foi utilizado as seguintes tecnologias:
 
 * [Node.js](https://nodejs.org/docs/latest/api/) - Servidor backend.
 * [Fastify](https://fastify.dev/) - Biblioteca para criar APIs no Node.js.
