@@ -1,16 +1,16 @@
 import { FastifyInstance } from "fastify";
 import {
-  PostMeasures,
-  ConfirmOrCorrectLLMReading,
-  ListCustomerMeasures,
+  postMeasures,
+  confirmOrCorrectLLMReading,
+  listCustomerMeasures,
 } from "../../services/measures";
 import path from "path";
 import fs from "fs/promises";
 
-export async function MeasureRoutes(app: FastifyInstance) {
+export async function measureRoutes(app: FastifyInstance) {
   app.post("/upload", async (req, res) => {
     try {
-      const response = await PostMeasures(req);
+      const response = await postMeasures(req);
 
       if (response.measure_already_exists) {
         return res.status(409).send({
@@ -41,13 +41,12 @@ export async function MeasureRoutes(app: FastifyInstance) {
   });
 
   app.get("/tmp/:filename", async (req, res) => {
-    const { filename } = req.params as { filename: string };
-    const filePath = path.resolve(process.cwd(), "tmp", filename);
-    const imageBuffer = await fs.readFile(filePath);
-
-    res.type("image/png");
-
     try {
+      const { filename } = req.params as { filename: string };
+      const filePath = path.resolve(process.cwd(), "tmp", filename);
+      const imageBuffer = await fs.readFile(filePath);
+
+      res.type("image/png");
       res.send(imageBuffer);
     } catch (error) {
       console.log(error);
@@ -57,7 +56,7 @@ export async function MeasureRoutes(app: FastifyInstance) {
 
   app.patch("/confirm", async (req, res) => {
     try {
-      const response = await ConfirmOrCorrectLLMReading(req);
+      const response = await confirmOrCorrectLLMReading(req);
 
       if (response?.measure_does_not_exist) {
         return res.status(404).send({
@@ -93,7 +92,7 @@ export async function MeasureRoutes(app: FastifyInstance) {
 
   app.get("/:customer_code/list", async (req, res) => {
     try {
-      const response = await ListCustomerMeasures(req);
+      const response = await listCustomerMeasures(req);
 
       if (response?.customer_code_not_informed) {
         return res.status(400).send({

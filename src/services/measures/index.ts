@@ -6,7 +6,6 @@ import path from "path";
 import crypto from "crypto";
 import { customAlphabet } from "nanoid";
 import { PrismaClient } from "@prisma/client";
-import { startOfMonth, endOfMonth } from "date-fns";
 
 const nanoid = customAlphabet(
   "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
@@ -14,21 +13,6 @@ const nanoid = customAlphabet(
 );
 
 const prisma = new PrismaClient();
-
-async function verifyExistingUUIDMeasureInDatabase(uuid: string) {
-  const existingUUIDMeasure = await prisma.measure.findUnique({
-    where: {
-      uuid: uuid,
-    },
-  });
-
-  if (existingUUIDMeasure) {
-    const newUUIDMeasure = nanoid(); // Gerando um novo UUID
-    return await verifyExistingUUIDMeasureInDatabase(newUUIDMeasure); // Recursividade
-  }
-
-  return uuid;
-}
 
 const saveImageAndGenerateLink = async (
   base64Image: string
@@ -53,7 +37,7 @@ function fileToGenerativePart(image: string, mimeType = "image/jpeg") {
   };
 }
 
-async function MeasureImageNumberExtractor(image: string) {
+async function measureImageNumberExtractor(image: string) {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const prompt =
@@ -66,7 +50,7 @@ async function MeasureImageNumberExtractor(image: string) {
   return result.response.text();
 }
 
-export async function PostMeasures(req: FastifyRequest) {
+export async function postMeasures(req: FastifyRequest) {
   const createMeasureSchema = z.object({
     image: z.string().base64("Invalid Format"),
     customer_code: z.string(),
@@ -94,15 +78,11 @@ export async function PostMeasures(req: FastifyRequest) {
     };
   }
 
-  const text = (await MeasureImageNumberExtractor(image))
+  const text = (await measureImageNumberExtractor(image))
     .trim()
     .replace(/\s+/g, "");
 
   const measureUUID = nanoid();
-
-  const measureUUIDVerified = await verifyExistingUUIDMeasureInDatabase(
-    measureUUID
-  ); // verifica duplicidade de um UUID ja existente por precaução
 
   const tempLink = await saveImageAndGenerateLink(image);
 
@@ -111,7 +91,7 @@ export async function PostMeasures(req: FastifyRequest) {
       customer_code: customer_code,
       measure_month: measureDate.getMonth() + 1,
       measure_year: String(measureDate.getFullYear()),
-      uuid: measureUUIDVerified,
+      uuid: measureUUID,
       measure_value: text,
       measure_type: measure_type,
       measure_datetime: measureDate,
@@ -122,11 +102,11 @@ export async function PostMeasures(req: FastifyRequest) {
   return {
     textExtracted: text,
     image_url: "http://localhost:3333" + tempLink,
-    measure_uuid: measureUUIDVerified,
+    measure_uuid: measureUUID,
   };
 }
 
-export async function ConfirmOrCorrectLLMReading(req: FastifyRequest) {
+export async function confirmOrCorrectLLMReading(req: FastifyRequest) {
   const createConfirmSchema = z.object({
     measure_uuid: z.string(),
     confirmed_value: z.number(),
@@ -167,7 +147,7 @@ type TMeasures = {
   image_url: string;
 };
 
-export async function ListCustomerMeasures(req: FastifyRequest) {
+export async function listCustomerMeasures(req: FastifyRequest) {
   const createListMeasuresSchema = z.object({
     measure_type: z
       .string()
