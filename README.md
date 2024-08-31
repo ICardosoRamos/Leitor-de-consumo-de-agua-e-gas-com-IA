@@ -76,7 +76,7 @@ Para este projeto foi utilizado as seguintes tecnologias:
 
 ## ✒️ Autores
 
-Mencione todos aqueles que ajudaram a levantar o projeto desde o seu início
+Participantes do projeto
 
 * **Irwyng Cardoso Ramos** - *Trabalho Total* - [ICardosoRamos](https://github.com/ICardosoRamos)
 
