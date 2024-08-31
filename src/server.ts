@@ -1,7 +1,7 @@
 import fastify from "fastify";
 import fastifyCors from "@fastify/cors";
 import fastifyMultipart from "@fastify/multipart";
-import Routes from "./routes/routes";
+import { routes } from "./routes/routes";
 import * as dotenvx from "@dotenvx/dotenvx";
 import { GoogleAIFileManager } from "@google/generative-ai/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -24,9 +24,9 @@ app.register(fastifyCors, {
 
 app.register(fastifyMultipart);
 
-app.register(Routes);
+app.register(routes);
 
-const port = process.env.PORT ? Number(process.env.PORT) : 3333;
+const port = process.env.PORT ? Number(process.env.PORT) : 6666;
 
 app.listen(
   {
