@@ -1,10 +1,6 @@
 # Leitor-de-consumo-de-agua-e-gas-com-IA
 Leitor de conta de agua e gas com Inteligência Artificial Gemini
 
-## Como rodar o projeto
-
-Apenas o único comando abaixo inicia tudo que é preciso e coloca o projeto pra rodar
-
 # Leitor de consumo de agua e gas com IA(Gemini do Google)
 
 Um sistema que permite o usuário registrar leituras de água ou gas mas com a facilidade de enviar uma imagem do relógio de registro para o Gemini do Google capturar o texto da imagem.
